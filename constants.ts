@@ -2,7 +2,7 @@ import { BlogPost, ProfileData, Certificate, Skill } from './types';
 
 export const PROFILE: ProfileData = {
   name: "Phùng Trọng Hưng",
-  avatar: "/z7290035212778_b5aa49c3531bc89903652da7a760ea58.jpg",
+  avatar: "/avatar.jpg",
   role: {
     vi: "Kỹ sư AI",
     en: "AI Engineer"
@@ -39,35 +39,35 @@ export const CERTIFICATES: Certificate[] = [
     title: { vi: "Chứng chỉ Kỹ năng Giao tiếp và Làm việc Nhóm", en: "Certificate in Communication and Teamwork Skills" },
     issuer: "HUTECH",
     date: "06/2025",
-    image: "/z7293264578352_d76c41e6cdefc59896f54589e48181ec.jpg"
+    image: "/cert-communication.jpg"
   },
   {
     id: 2,
     title: { vi: "Chứng chỉ Tiếng Anh Trình độ B1", en: "English Level B1 Certificate" },
     issuer: "Language Center",
     date: "12/2024",
-    image: "/z7293264579147_2edff55fb55bc85bc8b9eed4d77c5edf.jpg"
+    image: "/cert-english-b1.jpg"
   },
   {
     id: 3,
     title: { vi: "Networking Basics - Cisco Networking Academy", en: "Networking Basics - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy",
     date: "11/2025",
-    image: "/Screenshot 2025-12-03 233737.png"
+    image: "/screenshot-networking-basics.png"
   },
   {
     id: 4,
     title: { vi: "JavaScript Essentials 2 - Cisco Networking Academy", en: "JavaScript Essentials 2 - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy & JS Institute",
     date: "11/2025",
-    image: "/Screenshot 2025-12-03 233754.png"
+    image: "/screenshot-javascript-essentials.png"
   },
   {
     id: 5,
     title: { vi: "Java Essentials 1 - Cisco Networking Academy", en: "Java Essentials 1 - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy",
     date: "12/2025",
-    image: "/Screenshot 2025-12-06 083632.png"
+    image: "/screenshot-java-essentials.png"
   }
 ];
 
