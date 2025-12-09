@@ -8,7 +8,7 @@ const getAssetPath = (path: string) => {
 
 export const PROFILE: ProfileData = {
   name: "Phùng Trọng Hưng",
-  avatar: getAssetPath("/avatar.jpg"),
+  avatar: getAssetPath("/avatar.png"),
   role: {
     vi: "Kỹ sư AI",
     en: "AI Engineer"
