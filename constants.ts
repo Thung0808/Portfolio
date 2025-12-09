@@ -1,8 +1,14 @@
 import { BlogPost, ProfileData, Certificate, Skill } from './types';
 
+// Helper to get correct asset path for both dev and production
+const getAssetPath = (path: string) => {
+  const base = import.meta.env.MODE === 'production' ? '/Portfolio' : '';
+  return `${base}${path}`;
+};
+
 export const PROFILE: ProfileData = {
   name: "Phùng Trọng Hưng",
-  avatar: "/avatar.jpg",
+  avatar: getAssetPath("/avatar.jpg"),
   role: {
     vi: "Kỹ sư AI",
     en: "AI Engineer"
@@ -39,35 +45,35 @@ export const CERTIFICATES: Certificate[] = [
     title: { vi: "Chứng chỉ Kỹ năng Giao tiếp và Làm việc Nhóm", en: "Certificate in Communication and Teamwork Skills" },
     issuer: "HUTECH",
     date: "06/2025",
-    image: "/cert-communication.jpg"
+    image: getAssetPath("/cert-communication.jpg")
   },
   {
     id: 2,
     title: { vi: "Chứng chỉ Tiếng Anh Trình độ B1", en: "English Level B1 Certificate" },
     issuer: "Language Center",
     date: "12/2024",
-    image: "/cert-english-b1.jpg"
+    image: getAssetPath("/cert-english-b1.jpg")
   },
   {
     id: 3,
     title: { vi: "Networking Basics - Cisco Networking Academy", en: "Networking Basics - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy",
     date: "11/2025",
-    image: "/screenshot-networking-basics.png"
+    image: getAssetPath("/screenshot-networking-basics.png")
   },
   {
     id: 4,
     title: { vi: "JavaScript Essentials 2 - Cisco Networking Academy", en: "JavaScript Essentials 2 - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy & JS Institute",
     date: "11/2025",
-    image: "/screenshot-javascript-essentials.png"
+    image: getAssetPath("/screenshot-javascript-essentials.png")
   },
   {
     id: 5,
     title: { vi: "Java Essentials 1 - Cisco Networking Academy", en: "Java Essentials 1 - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy",
     date: "12/2025",
-    image: "/screenshot-java-essentials.png"
+    image: getAssetPath("/screenshot-java-essentials.png")
   }
 ];
 
