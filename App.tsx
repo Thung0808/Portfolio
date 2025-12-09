@@ -518,7 +518,14 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
         <div className="flex items-center justify-between h-20 lg:h-24 px-8 lg:px-12 relative z-10">
           <Link to="/" onClick={scrollToTop} className="flex-shrink-0 group/logo relative">
              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg opacity-0 group-hover/logo:opacity-30 blur-xl transition-opacity duration-500 animate-pulse"></div>
-            <span className="text-3xl lg:text-4xl xl:text-5xl font-black tracking-tighter text-white glitch-text group-hover/logo:text-transparent group-hover/logo:bg-clip-text group-hover/logo:bg-gradient-to-r group-hover/logo:from-cyan-400 group-hover/logo:via-purple-400 group-hover/logo:to-pink-400 transition-all duration-300" data-text="PHÙNG TRỌNG HƯNG">PHÙNG TRỌNG HƯNG</span>
+            <div className="flex items-center gap-4 relative z-10">
+              <img 
+                src={import.meta.env.MODE === 'production' ? '/Portfolio/LOGO.png' : '/LOGO.png'} 
+                alt="Logo" 
+                className="h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover/logo:scale-110 group-hover/logo:rotate-3" 
+              />
+              <span className="text-3xl lg:text-4xl xl:text-5xl font-black tracking-tighter text-white glitch-text group-hover/logo:text-transparent group-hover/logo:bg-clip-text group-hover/logo:bg-gradient-to-r group-hover/logo:from-cyan-400 group-hover/logo:via-purple-400 group-hover/logo:to-pink-400 transition-all duration-300" data-text="PHÙNG TRỌNG HƯNG">PHÙNG TRỌNG HƯNG</span>
+            </div>
           </Link>
           <div className="hidden md:block">
             <div className="ml-12 flex items-baseline space-x-10 lg:space-x-12">
