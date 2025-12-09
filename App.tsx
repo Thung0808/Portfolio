@@ -386,7 +386,7 @@ const MusicPlayer: React.FC = () => {
 
   useEffect(() => {
     // URL encode the filename to handle spaces and special characters
-    const audioPath = '/music.mp3';
+    const audioPath = import.meta.env.MODE === 'production' ? '/Portfolio/music.mp3' : '/music.mp3';
     audioRef.current = new Audio(audioPath);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.3;
