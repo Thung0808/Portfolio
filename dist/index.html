@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phùng Trọng Hưng</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
+      if (typeof tailwind === 'undefined') {
+        console.error('Tailwind CDN failed to load');
+      }
+    </script>
+    <script>
+      tailwind = tailwind || { config: {} };
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Roboto', 'sans-serif'],
+              mono: ['Fira Code', 'monospace'],
+            },
+            colors: {
+              glass: 'rgba(255, 255, 255, 0.05)',
+              'glass-border': 'rgba(255, 255, 255, 0.1)',
+              neon: '#00f3ff',
+              purpleNeon: '#bc13fe'
+            },
+            animation: {
+              'spin-slow': 'spin 12s linear infinite',
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'gradient': 'gradient 3s ease infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              scan: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(100vh)' },
+              },
+              gradient: {
+                '0%, 100%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- PrismJS Theme (Tomorrow Night) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #020617;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, #00f3ff, #bc13fe);
+        border-radius: 4px;
+      }
+      
+      /* Noise Overlay */
+      .bg-noise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      /* Custom Cursor - Light Trail Glow Effect */
+      * {
+        cursor: none !important;
+      }
+      
+      .cursor-glow-dot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #ffffff 0%, #00f3ff 50%, #bc13fe 100%);
+        pointer-events: none;
+        z-index: 10001;
+        transform: translate(-50%, -50%);
+        box-shadow: 
+          0 0 20px rgba(0, 243, 255, 1),
+          0 0 40px rgba(0, 243, 255, 0.8),
+          0 0 60px rgba(188, 19, 254, 0.6),
+          0 0 80px rgba(188, 19, 254, 0.4);
+        animation: cursor-pulse 2s ease-in-out infinite;
+      }
+      
+      .cursor-glow-ring {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 243, 255, 0.5);
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle, transparent 40%, rgba(0, 243, 255, 0.1) 60%, transparent 100%);
+        box-shadow: 
+          0 0 30px rgba(0, 243, 255, 0.4),
+          0 0 60px rgba(188, 19, 254, 0.3),
+          inset 0 0 20px rgba(0, 243, 255, 0.2);
+        animation: ring-rotate 4s linear infinite;
+      }
+      
+      .cursor-glow-ring.hovered {
+        border-color: rgba(0, 243, 255, 0.8);
+        box-shadow: 
+          0 0 40px rgba(0, 243, 255, 0.6),
+          0 0 80px rgba(188, 19, 254, 0.5),
+          0 0 120px rgba(255, 0, 110, 0.4),
+          inset 0 0 30px rgba(0, 243, 255, 0.3);
+      }
+      
+      .cursor-trail-point {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 243, 255, 0.8) 0%,
+          rgba(0, 243, 255, 0.6) 20%,
+          rgba(188, 19, 254, 0.5) 40%,
+          rgba(255, 0, 110, 0.3) 60%,
+          rgba(255, 190, 11, 0.2) 80%,
+          transparent 100%
+        );
+        filter: blur(8px);
+        box-shadow: 
+          0 0 20px rgba(0, 243, 255, 0.6),
+          0 0 40px rgba(188, 19, 254, 0.4),
+          0 0 60px rgba(255, 0, 110, 0.3);
+        animation: trail-fade 0.6s ease-out forwards;
+      }
+      
+      @keyframes cursor-pulse {
+        0%, 100% {
+          transform: translate(-50%, -50%) scale(1);
+          box-shadow: 
+            0 0 20px rgba(0, 243, 255, 1),
+            0 0 40px rgba(0, 243, 255, 0.8),
+            0 0 60px rgba(188, 19, 254, 0.6),
+            0 0 80px rgba(188, 19, 254, 0.4);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+          box-shadow: 
+            0 0 30px rgba(0, 243, 255, 1),
+            0 0 60px rgba(0, 243, 255, 0.9),
+            0 0 90px rgba(188, 19, 254, 0.7),
+            0 0 120px rgba(255, 0, 110, 0.5);
+        }
+      }
+      
+      @keyframes ring-rotate {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+      
+      @keyframes trail-fade {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(1.5);
+        }
+      }
+
+      /* Glitch Effect Utilities */
+      .glitch-text {
+        position: relative;
+        color: white;
+      }
+      .glitch-text::before,
+      .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+      }
+      .glitch-text::before {
+        left: 2px;
+        text-shadow: -2px 0 #00f3ff;
+        clip: rect(24px, 550px, 90px, 0);
+        animation: glitch-anim-2 3s infinite linear alternate-reverse;
+      }
+      .glitch-text::after {
+        left: -2px;
+        text-shadow: -2px 0 #ff00c1;
+        clip: rect(85px, 550px, 140px, 0);
+        animation: glitch-anim 2.5s infinite linear alternate-reverse;
+      }
+      @keyframes glitch-anim {
+        0% { clip: rect(11px, 9999px, 81px, 0); }
+        20% { clip: rect(68px, 9999px, 7px, 0); }
+        40% { clip: rect(26px, 9999px, 83px, 0); }
+        60% { clip: rect(2px, 9999px, 66px, 0); }
+        80% { clip: rect(98px, 9999px, 3px, 0); }
+        100% { clip: rect(41px, 9999px, 48px, 0); }
+      }
+      @keyframes glitch-anim-2 {
+        0% { clip: rect(65px, 9999px, 100px, 0); }
+        20% { clip: rect(4px, 9999px, 20px, 0); }
+        40% { clip: rect(26px, 9999px, 77px, 0); }
+        60% { clip: rect(90px, 9999px, 87px, 0); }
+        80% { clip: rect(6px, 9999px, 23px, 0); }
+        100% { clip: rect(59px, 9999px, 1px, 0); }
+      }
+      
+      /* Cyber Button Clip Path */
+      .clip-button {
+        clip-path: polygon(
+          10px 0, 
+          100% 0, 
+          100% calc(100% - 10px), 
+          calc(100% - 10px) 100%, 
+          0 100%, 
+          0 10px
+        );
+      }
+
+      /* Smooth Scroll */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Better Text Rendering */
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* Line Clamp Utility */
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "prismjs": "https://aistudiocdn.com/prismjs@^1.30.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/Portfolio/assets/index-DFBzLCM1.js"></script>
+</head>
+  <body class="bg-[#050505] text-white overflow-x-hidden antialiased selection:bg-cyan-500 selection:text-black cursor-none">
+    <div id="root"></div>
+</body>
+</html>
