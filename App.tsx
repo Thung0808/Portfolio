@@ -1510,15 +1510,30 @@ const Footer: React.FC<{ lang: Language }> = ({ lang }) => (
             {lang === 'vi' ? 'Liên kết' : 'Quick Links'}
           </h3>
           <div className="space-y-3">
-            <a href="#" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm w-full text-left"
+            >
               {lang === 'vi' ? 'Trang chủ' : 'Home'}
-            </a>
-            <a href="#blog" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">
+            </button>
+            <button 
+              onClick={() => {
+                const blogSection = document.getElementById('blog');
+                blogSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm w-full text-left"
+            >
               Blog
-            </a>
-            <a href="#certificates" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">
+            </button>
+            <button 
+              onClick={() => {
+                const certSection = document.getElementById('certificates');
+                certSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm w-full text-left"
+            >
               {lang === 'vi' ? 'Chứng chỉ' : 'Certificates'}
-            </a>
+            </button>
           </div>
         </motion.div>
 
