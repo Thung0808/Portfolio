@@ -74,6 +74,13 @@ export const CERTIFICATES: Certificate[] = [
     issuer: "Cisco Networking Academy",
     date: "12/2025",
     image: getAssetPath("/screenshot-java-essentials.png")
+  },
+  {
+    id: 6,
+    title: { vi: "Chứng nhận Gemini AI", en: "Gemini AI Certification" },
+    issuer: "Google",
+    date: "12/2025",
+    image: getAssetPath("/Chứng nhận Gemini AI.png")
   }
 ];
 
