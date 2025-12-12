@@ -946,7 +946,8 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: 0 }}
-              className="group relative"
+              className="group relative cursor-pointer"
+              onClick={() => window.open('https://github.com/Thung0808', '_blank')}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl opacity-20 group-hover:opacity-40 blur transition-opacity"></div>
               <div className="relative bg-white/[0.02] backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8 text-center hover:border-cyan-400/60 hover:bg-white/[0.05] transition-all duration-300">
@@ -1057,7 +1058,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                       Hutech University
                     </div>
                     <div className="text-xs text-gray-400">
-                      {lang === 'vi' ? 'Ngành Khoa học Máy tính' : 'Computer Science'}
+                      {lang === 'vi' ? 'Ngành Trí tuệ Nhân tạo' : 'Artificial Intelligence'}
                     </div>
                   </div>
                 </div>
@@ -1099,13 +1100,13 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                       <div className="text-sm text-gray-200 font-mono">0398655377</div>
                     </div>
                   </a>
-                  <a href="https://github.com/NetCoderPro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/50 hover:border-cyan-500/40 rounded-lg transition-all group">
+                  <a href="https://github.com/Thung0808" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/50 hover:border-cyan-500/40 rounded-lg transition-all group">
                     <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                       <IconGitHub className="w-5 h-5 text-cyan-400" />
                     </div>
                     <div>
                       <div className="text-xs text-gray-500 mb-1">GitHub</div>
-                      <div className="text-sm text-gray-200 font-mono">github.com/NetCoderPro</div>
+                      <div className="text-sm text-gray-200 font-mono">github.com/Thung0808</div>
                     </div>
                   </a>
                   <a href="https://www.facebook.com/pth.88204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/50 hover:border-cyan-500/40 rounded-lg transition-all group">
