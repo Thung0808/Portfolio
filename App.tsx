@@ -965,11 +965,15 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="group relative"
+              className="group relative cursor-pointer"
+              onClick={() => {
+                const certSection = document.getElementById('certificates');
+                certSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl opacity-20 group-hover:opacity-40 blur transition-opacity"></div>
               <div className="relative bg-white/[0.02] backdrop-blur-xl border border-purple-500/30 rounded-xl p-8 text-center hover:border-purple-400/60 hover:bg-white/[0.05] transition-all duration-300">
-                <div className="text-5xl font-black text-purple-400 mb-3">4+</div>
+                <div className="text-5xl font-black text-purple-400 mb-3">6+</div>
                 <div className="text-sm text-gray-300 font-semibold mb-1">
                   {lang === 'vi' ? 'Chứng Chỉ' : 'Certificates'}
                 </div>
