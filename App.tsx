@@ -1392,7 +1392,7 @@ const PostPage: React.FC<{ lang: Language }> = ({ lang }) => {
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-[150px] -z-10"></div>
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="inline-flex items-center text-gray-400 hover:text-cyan-400 mb-12 transition-all gap-3 group px-5 py-3 hover:bg-gradient-to-r hover:from-cyan-900/20 hover:to-purple-900/20 rounded-full cursor-none border border-transparent hover:border-cyan-500/30">
+        <Link to="/#blog" className="inline-flex items-center text-gray-400 hover:text-cyan-400 mb-12 transition-all gap-3 group px-5 py-3 hover:bg-gradient-to-r hover:from-cyan-900/20 hover:to-purple-900/20 rounded-full cursor-none border border-transparent hover:border-cyan-500/30">
           <IconArrowLeft />
           <span className="font-mono text-sm font-semibold group-hover:-translate-x-1 transition-transform uppercase tracking-wider">{lang === 'vi' ? 'QUAY LẠI' : 'RETURN'}</span>
         </Link>
