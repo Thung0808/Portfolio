@@ -48,7 +48,7 @@ const CyberButton: React.FC<{
   return (
     <button 
       onClick={onClick}
-      className={`relative group px-8 py-3 bg-transparent border-0 outline-none cursor-pointer ${className}`}
+      className={`relative group px-8 py-3 bg-transparent border-0 outline-none cursor-none ${className}`}
     >
       {/* Background Shapes */}
       <div className={`absolute inset-0 bg-${baseColor}-500/10 clip-button transition-all duration-300 group-hover:bg-${baseColor}-500/20`}></div>
@@ -124,7 +124,107 @@ const Snowfall = () => {
   );
 };
 
-// Custom Cursor removed - using default browser cursor
+// 2. Custom Cursor with Light Trail Effect
+const CustomCursor = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
+
+  useEffect(() => {
+    let animationFrame: number;
+    let lastTime = Date.now();
+    
+    const updateMousePosition = (e: MouseEvent) => {
+      const now = Date.now();
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Add trail point every 40ms for better performance
+      if (now - lastTime > 40) {
+        const newTrail = {
+          x: e.clientX,
+          y: e.clientY,
+          id: now + Math.random()
+        };
+        setTrail(prev => [...prev.slice(-15), newTrail]);
+        lastTime = now;
+      }
+      
+      // Check if hovering over clickable elements
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
+        setHovered(true);
+      } else {
+        setHovered(false);
+      }
+    };
+    
+    window.addEventListener('mousemove', updateMousePosition, { passive: true });
+    
+    // Clean up old trail points
+    const cleanupInterval = setInterval(() => {
+      setTrail(prev => prev.slice(-15));
+    }, 200);
+    
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+      clearInterval(cleanupInterval);
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  return (
+    <>
+      {/* Light Trail */}
+      {trail.map((point, index) => {
+        const progress = index / trail.length;
+        const size = 8 + progress * 28;
+        const opacity = progress * 0.5;
+        
+        return (
+          <motion.div
+            key={point.id}
+            className="cursor-trail-point"
+            style={{
+              left: point.x,
+              top: point.y,
+              width: `${size}px`,
+              height: `${size}px`,
+              opacity: opacity,
+              willChange: 'transform, opacity'
+            }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.15 }}
+          />
+        );
+      })}
+      
+      {/* Main Cursor Dot */}
+      <motion.div
+        className="cursor-glow-dot"
+        style={{ willChange: 'transform' }}
+        animate={{
+          x: mousePosition.x,
+          y: mousePosition.y,
+          scale: hovered ? 1.5 : 1
+        }}
+        transition={{ type: 'spring', damping: 25, stiffness: 600, mass: 0.1 }}
+      />
+      
+      {/* Outer Glow Ring */}
+      <motion.div
+        className={`cursor-glow-ring ${hovered ? 'hovered' : ''}`}
+        style={{ willChange: 'transform' }}
+        animate={{
+          x: mousePosition.x,
+          y: mousePosition.y,
+          scale: hovered ? 1.3 : 1
+        }}
+        transition={{ type: 'spring', damping: 20, stiffness: 450, mass: 0.2 }}
+      />
+    </>
+  );
+};
 
 // 3. Scroll Progress Bar
 const ScrollProgress = () => {
@@ -282,71 +382,51 @@ const NetworkBackground: React.FC = () => {
 const MusicPlayer: React.FC = () => {
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Construct the audio path based on environment
+    // URL encode the filename to handle spaces and special characters
     const audioPath = import.meta.env.MODE === 'production' ? '/Portfolio/music.mp3' : '/music.mp3';
-    
-    // Create audio element
-    const audio = new Audio();
-    audio.preload = 'auto';
-    audio.loop = true;
-    audio.volume = 0.3;
-    audioRef.current = audio;
+    audioRef.current = new Audio(audioPath);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3;
     
     // Add error listener
-    const handleError = (e: Event) => {
-      console.error("Audio load error:", audioPath, e);
+    audioRef.current.addEventListener('error', (e) => {
+      console.error("Audio load error:", e);
       setError(true);
-      setLoaded(false);
-    };
+    });
     
     // Add canplay listener
-    const handleCanPlay = () => {
-      console.log("Audio ready to play:", audioPath);
+    audioRef.current.addEventListener('canplay', () => {
+      console.log("Audio ready to play");
       setError(false);
-      setLoaded(true);
-    };
-    
-    audio.addEventListener('error', handleError);
-    audio.addEventListener('canplaythrough', handleCanPlay);
-    
-    // Set the source after adding event listeners
-    audio.src = audioPath;
+    });
     
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.removeEventListener('error', handleError);
-        audioRef.current.removeEventListener('canplaythrough', handleCanPlay);
         audioRef.current = null;
       }
     };
   }, []);
 
-  const togglePlay = async () => {
-    if (!audioRef.current) return;
-    
-    if (playing) {
-      audioRef.current.pause();
-      setPlaying(false);
-    } else {
-      try {
-        // Attempt to play
-        await audioRef.current.play();
-        setPlaying(true);
-        setError(false);
-        console.log("Playing audio successfully");
-      } catch (e) {
-        console.error("Audio play failed:", e);
-        // Provide more detailed error info
-        if (e instanceof Error) {
-          console.error("Error details:", e.message);
-        }
-        setError(true);
+  const togglePlay = () => {
+    if (audioRef.current && !error) {
+      if (playing) {
+        audioRef.current.pause();
         setPlaying(false);
+      } else {
+        audioRef.current.play()
+          .then(() => {
+            setPlaying(true);
+            console.log("Playing audio");
+          })
+          .catch(e => {
+            console.error("Audio play failed:", e);
+            setError(true);
+            setPlaying(false);
+          });
       }
     }
   };
@@ -363,16 +443,14 @@ const MusicPlayer: React.FC = () => {
 
         <button 
         onClick={togglePlay}
-        disabled={!loaded && !error}
         className={`p-4 rounded-full border backdrop-blur-xl transition-all duration-300 shadow-2xl group relative overflow-hidden ${
-          error ? 'bg-red-900/40 border-red-400 text-red-300 cursor-not-allowed' :
-          !loaded ? 'bg-gray-900/40 border-gray-400 text-gray-400 cursor-wait' :
+          error ? 'bg-red-900/40 border-red-400 text-red-300' :
           playing ? 'bg-cyan-900/40 border-cyan-400 text-cyan-300' : 
-          'bg-white/5 border-white/20 text-gray-400 hover:border-cyan-400/50'
+          'bg-white/5 border-white/20 text-gray-400'
         }`}
-        title={error ? 'Audio file error - check console' : !loaded ? 'Loading audio...' : playing ? 'Pause music' : 'Play music (Click to start)'}
+        title={error ? 'Audio file not found' : playing ? 'Pause music' : 'Play music'}
         >
-        <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity ${!loaded || error ? 'hidden' : ''}`}></div>
+        <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity`}></div>
         <div className={`absolute inset-0 rounded-full border border-cyan-400 opacity-0 transition-all ${playing ? 'animate-ping opacity-30' : ''}`} />
         <IconMusic />
         </button>
@@ -467,7 +545,7 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
               </Link>
               <button
                 onClick={() => scrollToSection('about')}
-                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-none overflow-hidden"
               >
                 {/* Animated background on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 scale-x-0 group-hover/item:scale-x-100 transition-transform duration-300 origin-left rounded-lg"></div>
@@ -487,7 +565,7 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
               </button>
               <button
                 onClick={() => scrollToSection('blog')}
-                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-none overflow-hidden"
               >
                 {/* Animated background on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 scale-x-0 group-hover/item:scale-x-100 transition-transform duration-300 origin-left rounded-lg"></div>
@@ -505,7 +583,7 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
               </button>
               <button
                 onClick={() => scrollToSection('certificates')}
-                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 text-base lg:text-lg font-bold text-gray-300 hover:text-white transition-all group/item cursor-none overflow-hidden"
               >
                 {/* Animated background on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-cyan-500/10 scale-x-0 group-hover/item:scale-x-100 transition-transform duration-300 origin-left rounded-lg"></div>
@@ -528,7 +606,7 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
           <div className="flex items-center gap-4">
              <button
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
-              className="flex items-center gap-3 text-sm font-bold text-cyan-300 hover:text-white transition-all bg-gradient-to-r from-cyan-900/30 to-purple-900/30 px-6 py-3 rounded-full border-2 border-cyan-500/40 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-pointer backdrop-blur-sm"
+              className="flex items-center gap-3 text-sm font-bold text-cyan-300 hover:text-white transition-all bg-gradient-to-r from-cyan-900/30 to-purple-900/30 px-6 py-3 rounded-full border-2 border-cyan-500/40 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-none backdrop-blur-sm"
             >
               <IconGlobe className="w-5 h-5" />
               <span className="uppercase tracking-widest text-base">{lang}</span>
@@ -737,7 +815,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                 <a 
                   href="/CV_PHUNGTRONGHUNG_EN.pdf" 
                   download="CV_PhungTrongHung.pdf"
-                  className="group relative inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-full font-bold text-white text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-105 cursor-pointer overflow-hidden"
+                  className="group relative inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-full font-bold text-white text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-105 cursor-none overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
                   <IconUpload className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform relative z-10" />
@@ -750,7 +828,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                     href="https://github.com/Thung0808" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-cyan-500/30 hover:border-cyan-400 rounded-full font-semibold text-cyan-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:scale-105 cursor-pointer"
+                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-cyan-500/30 hover:border-cyan-400 rounded-full font-semibold text-cyan-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:scale-105 cursor-none"
                   >
                     <IconGitHub className="w-4 h-4 mr-2 transition-transform group-hover:rotate-12" />
                     <span>GitHub</span>
@@ -763,7 +841,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                   
                   <a 
                     href="mailto:phungtronghung0808@gmail.com"
-                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-purple-500/30 hover:border-purple-400 rounded-full font-semibold text-purple-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:scale-105 cursor-pointer"
+                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-purple-500/30 hover:border-purple-400 rounded-full font-semibold text-purple-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:scale-105 cursor-none"
                   >
                     <IconEmail className="w-4 h-4 mr-2 transition-transform group-hover:scale-110" />
                     <span>Email</span>
@@ -776,7 +854,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                   
                   <a 
                     href="tel:0398655377"
-                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-pink-500/30 hover:border-pink-400 rounded-full font-semibold text-pink-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-105 cursor-pointer"
+                    className="group relative inline-flex items-center justify-center px-5 py-3 bg-black/40 backdrop-blur-sm border border-pink-500/30 hover:border-pink-400 rounded-full font-semibold text-pink-300 hover:text-white text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-105 cursor-none"
                   >
                     <IconPhone className="w-4 h-4 mr-2 transition-transform group-hover:rotate-12" />
                     <span>Phone</span>
@@ -1554,10 +1632,11 @@ const App: React.FC = () => {
 
   return (
     <HashRouter>
-      <div className="relative min-h-screen text-slate-200 font-sans">
+      <div className="relative min-h-screen text-slate-200 font-sans cursor-none">
         {/* Global Overlays */}
         <div className="bg-noise"></div>
         <Snowfall />
+        <CustomCursor />
         <ScrollProgress />
         <NetworkBackground />
         
