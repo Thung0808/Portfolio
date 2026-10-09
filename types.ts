@@ -33,8 +33,16 @@ export interface Certificate {
 
 export interface Skill {
   name: string;
-  level: number; // 0-100
-  icon?: string;
+  technologies: string[];
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  repository: string;
+  technologies: string[];
+  vi: { role: string; description: string; highlights: string[] };
+  en: { role: string; description: string; highlights: string[] };
 }
 
 export interface ProfileData {
@@ -48,6 +56,7 @@ export interface ProfileData {
     en: string;
   };
   avatar: string;
+  resume: string;
   socials: {
     platform: string;
     url: string;

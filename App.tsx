@@ -3,7 +3,7 @@ import { HashRouter, Routes, Route, Link, useLocation, useParams, useNavigate } 
 import Prism from 'prismjs';
 import { motion, AnimatePresence, useScroll, useSpring, useTransform, useMotionValue } from 'framer-motion';
 import { BlogPost, Language, ProfileData, Certificate } from './types';
-import { BLOG_POSTS, PROFILE, CERTIFICATES } from './constants';
+import { BLOG_POSTS, PROFILE, CERTIFICATES, SKILLS, EDUCATION, EXPERIENCE, PUBLICATIONS, PROJECTS } from './constants';
 
 // --- Icons ---
 const IconGlobe = (props: React.SVGProps<SVGSVGElement>) => (
@@ -415,13 +415,22 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
         {/* Hover color glow */}
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-2xl -z-10"></div>
         
-        <div className="flex items-center justify-between h-20 lg:h-24 px-8 lg:px-12 relative z-10">
+        <div className="flex flex-wrap items-center justify-between gap-3 py-4 px-4 lg:px-8 relative z-10">
           <Link to="/" onClick={scrollToTop} className="flex-shrink-0 group/logo relative">
              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg opacity-0 group-hover/logo:opacity-30 blur-xl transition-opacity duration-500 animate-pulse"></div>
-            <span className="text-3xl lg:text-4xl xl:text-5xl font-black tracking-tighter text-white glitch-text group-hover/logo:text-transparent group-hover/logo:bg-clip-text group-hover/logo:bg-gradient-to-r group-hover/logo:from-cyan-400 group-hover/logo:via-purple-400 group-hover/logo:to-pink-400 transition-all duration-300" data-text="PHÙNG TRỌNG HƯNG">PHÙNG TRỌNG HƯNG</span>
+            <span className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tighter text-white glitch-text group-hover/logo:text-transparent group-hover/logo:bg-clip-text group-hover/logo:bg-gradient-to-r group-hover/logo:from-cyan-400 group-hover/logo:via-purple-400 group-hover/logo:to-pink-400 transition-all duration-300" data-text="PHÙNG TRỌNG HƯNG">PHÙNG TRỌNG HƯNG</span>
           </Link>
-          <div className="hidden md:block">
-            <div className="ml-12 flex items-baseline space-x-10 lg:space-x-12">
+          <div className="order-3 w-full lg:order-none lg:w-auto">
+            <div className="flex flex-wrap items-baseline justify-center gap-1">
+              <button onClick={() => scrollToSection('projects')} className="px-4 py-3 text-sm font-bold text-gray-300 hover:text-cyan-300 transition-colors">
+                {lang === 'vi' ? 'Dự án' : 'Projects'}
+              </button>
+              <button onClick={() => scrollToSection('experience')} className="px-4 py-3 text-sm font-bold text-gray-300 hover:text-cyan-300 transition-colors">
+                {lang === 'vi' ? 'Kinh nghiệm' : 'Experience'}
+              </button>
+              <button onClick={() => scrollToSection('research')} className="px-4 py-3 text-sm font-bold text-gray-300 hover:text-cyan-300 transition-colors">
+                {lang === 'vi' ? 'Nghiên cứu' : 'Research'}
+              </button>
               <Link 
                 to="/"
                 onClick={scrollToTop}
@@ -506,7 +515,8 @@ const Navbar: React.FC<{ lang: Language, setLang: (l: Language) => void }> = ({ 
           <div className="flex items-center gap-4">
              <button
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
-              className="flex items-center gap-3 text-sm font-bold text-cyan-300 hover:text-white transition-all bg-gradient-to-r from-cyan-900/30 to-purple-900/30 px-6 py-3 rounded-full border-2 border-cyan-500/40 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-pointer backdrop-blur-sm"
+              aria-label={lang === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
+              className="flex items-center gap-2 text-sm font-bold text-cyan-300 hover:text-white transition-all bg-gradient-to-r from-cyan-900/30 to-purple-900/30 px-3 py-3 rounded-full border-2 border-cyan-500/40 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-pointer backdrop-blur-sm"
             >
               <IconGlobe className="w-5 h-5" />
               <span className="uppercase tracking-widest text-base">{lang}</span>
@@ -566,7 +576,7 @@ const CertificatesSection: React.FC<{ lang: Language }> = ({ lang }) => {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0f1729] via-transparent to-transparent z-10 opacity-60"></div>
                   <img 
                     src={cert.image} 
-                    alt="Certificate" 
+                    alt={cert.title[lang]}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter grayscale-[0.3] group-hover:grayscale-0" 
                   />
                   <div className="absolute top-4 right-4 z-20 bg-cyan-500/10 backdrop-blur-sm p-2.5 rounded-lg border border-cyan-500/30 group-hover:scale-110 transition-transform">
@@ -581,7 +591,7 @@ const CertificatesSection: React.FC<{ lang: Language }> = ({ lang }) => {
                     {lang === 'vi' ? cert.title.vi : cert.title.en}
                   </h3>
                   <p className="text-gray-500 text-xs font-mono flex items-center gap-2">
-                    Verified {cert.date}
+                    {cert.date}
                   </p>
                 </div>
               </motion.div>
@@ -607,9 +617,12 @@ const CertificatesSection: React.FC<{ lang: Language }> = ({ lang }) => {
                 </h3>
                 <p className="text-gray-300 text-base lg:text-lg xl:text-xl max-w-4xl mx-auto leading-relaxed">
                 {lang === 'vi' 
-                    ? 'Tôi luôn tìm kiếm cơ hội để hợp tác trong các dự án AI, Machine Learning và phát triển ứng dụng web. Với kinh nghiệm trong việc xây dựng các giải pháp công nghệ sáng tạo và hiệu quả, tôi tin rằng chúng ta có thể cùng nhau tạo ra những sản phẩm tuyệt vời. Nếu bạn có ý tưởng thú vị, dự án cần đối tác kỹ thuật đáng tin cậy, hoặc đơn giản là muốn trao đổi về công nghệ, đừng ngần ngại liên hệ với tôi qua email, điện thoại, hoặc các kênh mạng xã hội. Hãy cùng nhau biến ý tưởng thành hiện thực và xây dựng tương lai công nghệ!' 
-                    : 'I am always looking for opportunities to collaborate on AI, Machine Learning and web application development projects. With experience in building creative and effective technology solutions, I believe we can create amazing products together. If you have an interesting idea, a project that needs a reliable technical partner, or simply want to discuss technology, don\'t hesitate to contact me via email, phone, or social media channels. Let\'s turn ideas into reality and build the future of technology together!'}
+                    ? 'Liên hệ với tôi về các dự án LLM, RAG, agent và ứng dụng AI. Tôi làm việc tại TP. Hồ Chí Minh.'
+                    : 'Contact me about LLM, RAG, agent, and applied AI projects. I am based in Ho Chi Minh City.'}
                 </p>
+                <a href="mailto:phungtronghung0808@gmail.com" className="inline-flex items-center gap-2 mt-8 text-cyan-300 hover:text-white transition-colors break-all">
+                  <IconEmail /> phungtronghung0808@gmail.com
+                </a>
             </div>
           </motion.div>
        </div>
@@ -665,8 +678,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="relative inline-flex items-center gap-3 px-6 py-3.5 mb-10 text-sm font-bold tracking-[0.2em] text-cyan-300 uppercase rounded-full border border-cyan-500/40 backdrop-blur-md overflow-hidden group"
-                style={{ minWidth: '200px', whiteSpace: 'nowrap' }}
+                className="relative inline-flex items-center gap-3 px-4 sm:px-6 py-3.5 mb-10 text-xs sm:text-sm font-bold text-cyan-300 uppercase rounded-full border border-cyan-500/40 backdrop-blur-md overflow-hidden group"
               >
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/30 via-purple-900/40 to-cyan-900/30 animate-[gradient_3s_ease_infinite] bg-[length:200%_100%]"></div>
@@ -688,11 +700,11 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white mb-10 tracking-tighter leading-[0.85]"
+                className="text-5xl sm:text-6xl md:text-7xl font-black text-white mb-10 tracking-tighter leading-[1.05]"
               >
-                {lang === 'vi' ? 'KẾT NỐI' : 'CONNECT'} <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-purple-500 glitch-text" data-text={lang === 'vi' ? 'TƯƠNG LAI' : 'THE FUTURE'}>
-                  {lang === 'vi' ? 'TƯƠNG LAI' : 'THE FUTURE'}
+                {lang === 'vi' ? 'AI CHO' : 'AI FOR'} <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-purple-500">
+                  {lang === 'vi' ? 'CÔNG VIỆC THỰC TẾ' : 'REAL-WORLD WORK'}
                 </span>
               </motion.h1>
               
@@ -713,8 +725,8 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
               >
                 {/* Download CV Button - Primary CTA */}
                 <a 
-                  href="/CV_PHUNGTRONGHUNG_EN.pdf" 
-                  download="CV_PhungTrongHung.pdf"
+                  href={PROFILE.resume}
+                  download="PhungTrongHung_Resume.pdf"
                   className="group relative inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-full font-bold text-white text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-105 cursor-pointer overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
@@ -788,7 +800,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                    
                    <img 
                     src={PROFILE.avatar} 
-                    alt="Profile" 
+                    alt={PROFILE.name}
                     className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-opacity duration-700 scale-105 group-hover:scale-100"
                    />
                    
@@ -799,7 +811,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                       <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">{PROFILE.name}</h2>
                       <p className="text-cyan-400 font-mono text-sm tracking-widest uppercase flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                        {lang === 'vi' ? 'Kỹ sư AI' : 'AI Engineer'}
+                        {PROFILE.role[lang]}
                       </p>
                    </div>
                 </div>
@@ -833,35 +845,37 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
             </h2>
             <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               {lang === 'vi' 
-                ? 'Kỹ sư AI với đam mê sâu sắc về Machine Learning và Deep Learning. Chuyên xây dựng các giải pháp AI đột phá và ứng dụng công nghệ vào thực tế.'
-                : 'AI Engineer with deep passion for Machine Learning and Deep Learning. Specialized in building breakthrough AI solutions and real-world applications.'
+                ? 'Kỹ sư AI tại UEF, TP. Hồ Chí Minh. Tôi làm việc với hệ thống LLM, truy xuất tri thức và agent, từ backend đến giao diện web/desktop và triển khai. Tác giả thứ nhất của hai công trình nghiên cứu về nhận dạng tĩnh mạch lòng bàn tay và cắt mạch lượng tử.'
+                : 'AI Engineer at UEF, Ho Chi Minh City. I work on LLM systems, knowledge retrieval, and agents, from backend to web/desktop interfaces and deployment. First author of two research works on palm vein recognition and quantum circuit cutting.'
               }
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {/* Stats Cards */}
-            <motion.div
+            <motion.button
+              type="button"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: 0 }}
               className="group relative cursor-pointer"
-              onClick={() => window.open('https://github.com/Thung0808', '_blank')}
+              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl opacity-20 group-hover:opacity-40 blur transition-opacity"></div>
               <div className="relative bg-white/[0.02] backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8 text-center hover:border-cyan-400/60 hover:bg-white/[0.05] transition-all duration-300">
-                <div className="text-5xl font-black text-cyan-400 mb-3">10+</div>
+                <div className="text-5xl font-black text-cyan-400 mb-3">{PROJECTS.length}</div>
                 <div className="text-sm text-gray-300 font-semibold mb-1">
                   {lang === 'vi' ? 'Dự Án' : 'Projects'}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {lang === 'vi' ? 'Hoàn Thành' : 'Completed'}
+                  {lang === 'vi' ? 'Nổi bật tại UEF' : 'Featured at UEF'}
                 </div>
               </div>
-            </motion.div>
+            </motion.button>
 
-            <motion.div
+            <motion.button
+              type="button"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -874,7 +888,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl opacity-20 group-hover:opacity-40 blur transition-opacity"></div>
               <div className="relative bg-white/[0.02] backdrop-blur-xl border border-purple-500/30 rounded-xl p-8 text-center hover:border-purple-400/60 hover:bg-white/[0.05] transition-all duration-300">
-                <div className="text-5xl font-black text-purple-400 mb-3">6+</div>
+                <div className="text-5xl font-black text-purple-400 mb-3">{CERTIFICATES.length}</div>
                 <div className="text-sm text-gray-300 font-semibold mb-1">
                   {lang === 'vi' ? 'Chứng Chỉ' : 'Certificates'}
                 </div>
@@ -882,7 +896,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                   {lang === 'vi' ? 'Chuyên Nghiệp' : 'Professional'}
                 </div>
               </div>
-            </motion.div>
+            </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -893,12 +907,12 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl opacity-20 group-hover:opacity-40 blur transition-opacity"></div>
               <div className="relative bg-white/[0.02] backdrop-blur-xl border border-pink-500/30 rounded-xl p-8 text-center hover:border-pink-400/60 hover:bg-white/[0.05] transition-all duration-300">
-                <div className="text-3xl font-black text-pink-400 mb-3">🎓</div>
+                <div className="text-5xl font-black text-pink-400 mb-3">{PUBLICATIONS.length}</div>
                 <div className="text-sm text-gray-300 font-semibold mb-1">
-                  {lang === 'vi' ? 'Đại Học' : 'University'}
+                  {lang === 'vi' ? 'Công trình nghiên cứu' : 'Research works'}
                 </div>
                 <div className="text-xs text-gray-500">
-                  Hutech University
+                  {lang === 'vi' ? 'Tác giả thứ nhất' : 'First author'}
                 </div>
               </div>
             </motion.div>
@@ -924,17 +938,10 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                   </h3>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { name: 'Python', level: '95%' },
-                    { name: 'Machine Learning', level: '90%' },
-                    { name: 'Deep Learning', level: '85%' },
-                    { name: 'Java', level: '80%' },
-                    { name: 'JavaScript', level: '75%' },
-                    { name: 'AI Systems', level: '88%' }
-                  ].map((skill, idx) => (
-                    <div key={idx} className="bg-gray-800/40 border border-gray-700/50 rounded-lg px-4 py-3 hover:border-cyan-500/40 hover:bg-gray-800/60 transition-all group">
+                  {SKILLS.map((skill) => (
+                    <div key={skill.name} className="bg-gray-800/40 border border-gray-700/50 rounded-lg px-4 py-3 hover:border-cyan-500/40 hover:bg-gray-800/60 transition-all group">
                       <div className="text-sm font-semibold text-gray-200 mb-1">{skill.name}</div>
-                      <div className="text-xs text-cyan-400 font-mono">{skill.level}</div>
+                      <div className="text-xs text-cyan-300 leading-relaxed">{skill.technologies.join(', ')}</div>
                     </div>
                   ))}
                 </div>
@@ -953,12 +960,12 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                 <div className="space-y-4">
                   <div className="relative pl-6 border-l-2 border-cyan-500/30">
                     <div className="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
-                    <div className="text-xs text-cyan-400 font-mono mb-1">{lang === 'vi' ? 'Hiện tại' : 'Current'}</div>
+                    <div className="text-xs text-cyan-400 font-mono mb-1">{EDUCATION.period}</div>
                     <div className="text-sm font-semibold text-white mb-1">
-                      Hutech University
+                      {EDUCATION.school} - Ho Chi Minh City University of Technology
                     </div>
                     <div className="text-xs text-gray-400">
-                      {lang === 'vi' ? 'Ngành Trí tuệ Nhân tạo' : 'Artificial Intelligence'}
+                      {EDUCATION[lang]}
                     </div>
                   </div>
                 </div>
@@ -988,7 +995,7 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
                     </div>
                     <div>
                       <div className="text-xs text-gray-500 mb-1">Email</div>
-                      <div className="text-sm text-gray-200 font-mono">phungtronghung0808@gmail.com</div>
+                      <div className="text-sm text-gray-200 font-mono break-all">phungtronghung0808@gmail.com</div>
                     </div>
                   </a>
                   <a href="tel:0398655377" className="flex items-center gap-4 p-4 bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/50 hover:border-cyan-500/40 rounded-lg transition-all group">
@@ -1024,6 +1031,97 @@ const HomePage: React.FC<{ lang: Language }> = ({ lang }) => {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      <section id="experience" className="py-24 scroll-mt-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-12">
+            {lang === 'vi' ? 'Kinh nghiệm làm việc' : 'Work experience'}
+          </h2>
+          <div className="space-y-10">
+            {EXPERIENCE.map((experience) => (
+              <article key={experience.id} className="border-l-2 border-cyan-500/40 pl-6 md:pl-10">
+                <p className="text-cyan-300 font-mono text-sm mb-3">{experience[lang].period}</p>
+                <h3 className="text-2xl font-bold text-white mb-2">{experience[lang].role}</h3>
+                <p className="text-gray-200 mb-1">{experience.organization}</p>
+                <p className="text-sm text-gray-400 mb-4">{experience[lang].department}</p>
+                <p className="text-gray-300 leading-relaxed max-w-3xl">{experience[lang].description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" className="py-24 scroll-mt-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-cyan-300 font-mono text-sm mb-4">LLM / RAG / AGENTS</p>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-5">
+            {lang === 'vi' ? 'Dự án nổi bật' : 'Selected projects'}
+          </h2>
+          <p className="text-gray-400 max-w-2xl mb-12">
+            {lang === 'vi'
+              ? 'Ba ứng dụng AI phục vụ học tập, công việc nội bộ và xử lý cuộc họp tại UEF.'
+              : 'Three AI applications for learning, internal workflows, and meeting processing at UEF.'}
+          </p>
+          <div className="space-y-8">
+            {PROJECTS.map((project, index) => (
+              <article key={project.id} className="grid md:grid-cols-[1fr_2fr] gap-8 p-6 md:p-10 rounded-2xl border border-cyan-500/20 bg-white/[0.02]">
+                <div>
+                  <p className="text-cyan-400 font-mono text-sm mb-4">0{index + 1}</p>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">{project.name}</h3>
+                  <p className="text-sm text-cyan-300 mb-6">{project[lang].role}</p>
+                  <a href={project.repository} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-cyan-300 transition-colors" aria-label={`${lang === 'vi' ? 'Mã nguồn' : 'Source code'}: ${project.name}`}>
+                    <IconGitHub /> {lang === 'vi' ? 'Xem mã nguồn' : 'View source'}
+                  </a>
+                </div>
+                <div>
+                  <p className="text-gray-300 leading-relaxed mb-6">{project[lang].description}</p>
+                  <ul className="list-disc pl-5 space-y-3 text-sm text-gray-300 leading-relaxed mb-6">
+                    {project[lang].highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+                  </ul>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.map((technology) => (
+                      <span key={technology} className="px-3 py-1.5 rounded border border-cyan-500/20 text-xs text-cyan-200 bg-cyan-500/5">{technology}</span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-6">
+            {lang === 'vi' ? 'Số liệu kết quả theo CV; chức năng và stack đối chiếu mã nguồn dự án.' : 'Outcome metrics from my resume; features and stack cross-checked against project source code.'}
+          </p>
+        </div>
+      </section>
+
+      <section id="research" className="py-24 scroll-mt-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-12">
+            {lang === 'vi' ? 'Nghiên cứu & công bố' : 'Publications & research'}
+          </h2>
+          <div className="space-y-10">
+            {PUBLICATIONS.map((publication) => (
+              <article key={publication.id} className="border-b border-white/10 pb-10">
+                <div className="flex flex-wrap gap-3 items-center text-sm text-cyan-300 mb-4">
+                  <span>{publication.date}</span>
+                  <span className="px-3 py-1 border border-cyan-500/30 rounded">{publication[lang].status}</span>
+                </div>
+                <h3 className="text-xl md:text-2xl text-white font-bold leading-snug mb-4 max-w-4xl">{publication.title}</h3>
+                <p className="text-sm text-gray-400 mb-2">{publication.authors}</p>
+                <p className="text-sm text-cyan-200 mb-5">{publication.venue}</p>
+                <p className="text-gray-300 leading-relaxed max-w-4xl">{publication[lang].description}</p>
+                {publication.url && (
+                  <a href={publication.url} target="_blank" rel="noopener noreferrer" className="inline-block text-cyan-300 hover:text-white transition-colors mt-5">{publication[lang].linkLabel}</a>
+                )}
+              </article>
+            ))}
+          </div>
+          <p className="text-sm text-gray-400 leading-relaxed mt-6 max-w-3xl">
+            {lang === 'vi'
+              ? 'Nghiên cứu trước đó (03-12/2025): phân loại ảnh ECG với Grad-CAM, SHAP, LIME và saliency maps; tiền xử lý, đánh giá dữ liệu event-camera (DVS) so với phương pháp dựa trên khung hình.'
+              : 'Earlier research (03-12/2025): ECG image classification with Grad-CAM, SHAP, LIME, and saliency maps; preprocessing and benchmarking event-camera (DVS) data against frame-based methods.'}
+          </p>
         </div>
       </section>
 
@@ -1528,6 +1626,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('app_lang', language);
+    document.documentElement.lang = language;
   }, [language]);
 
   return (

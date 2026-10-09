@@ -1,21 +1,21 @@
-import { BlogPost, ProfileData, Certificate, Skill } from './types';
+import { BlogPost, ProfileData, Certificate, Skill, Project } from './types';
 
 // Helper to get correct asset path for both dev and production
 const getAssetPath = (path: string) => {
-  const base = import.meta.env.MODE === 'production' ? '/Portfolio' : '';
-  return `${base}${path}`;
+  return `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
 };
 
 export const PROFILE: ProfileData = {
   name: "Phùng Trọng Hưng",
   avatar: getAssetPath("/avatar.png"),
+  resume: getAssetPath("/PhungTrongHung_Resume.pdf"),
   role: {
-    vi: "Kỹ sư AI",
-    en: "AI Engineer"
+    vi: "Kỹ sư AI | LLM & Agentic Systems",
+    en: "AI Engineer | LLM & Agentic Systems"
   },
   bio: {
-    vi: "Đam mê nghiên cứu và phát triển các hệ thống deep learning cho ứng dụng thực tế. Tập trung vào tối ưu hóa hiệu suất mô hình và triển khai các giải pháp AI hiệu quả, thân thiện với người dùng mang lại giá trị thực sự.",
-    en: "Passionate about research and development of deep learning systems for real-world applications. Focus on optimizing model performance and deploying efficient, user-friendly AI solutions that deliver real value."
+    vi: "Tôi xây dựng và triển khai hệ thống LLM từ đầu đến cuối tại UEF: trợ lý học tập RAG trên Canvas LMS, trợ lý cổng nội bộ với công cụ phân quyền và ứng dụng biên bản họp AI. Nghiên cứu của tôi tập trung vào thị giác máy tính và tối ưu mạch lượng tử.",
+    en: "I build and deploy end-to-end LLM systems at UEF: a RAG learning assistant for Canvas LMS, a staff-portal assistant with permission-scoped tools, and an AI meeting notes app. My research focuses on computer vision and quantum circuit optimization."
   },
   socials: [
     { platform: "GitHub", url: "https://github.com/Thung0808", icon: "github" },
@@ -25,18 +25,168 @@ export const PROFILE: ProfileData = {
 };
 
 export const SKILLS: Skill[] = [
-  { name: "Python", level: 95 },
-  { name: "TensorFlow", level: 90 },
-  { name: "PyTorch", level: 90 },
-  { name: "OpenCV", level: 85 },
-  { name: "YOLO", level: 85 },
-  { name: "Transformers", level: 80 },
-  { name: "Scikit-learn", level: 85 },
-  { name: "MediaPipe", level: 80 },
-  { name: "XGBoost/LightGBM", level: 75 },
-  { name: "Java", level: 70 },
-  { name: "C/C++", level: 70 },
-  { name: "C#", level: 65 }
+  { name: "Languages", technologies: ["Python", "C#", "TypeScript", "JavaScript"] },
+  { name: "LLM & Agents", technologies: ["LangGraph", "LangChain", "Semantic Kernel", "Tool Calling", "MCP", "Human-in-the-loop", "OpenAI", "Gemini", "vLLM", "Ollama", "Speech-to-Text"] },
+  { name: "Retrieval (RAG)", technologies: ["RAG", "Graph-RAG", "BM25 + vector search", "RRF", "Query rewriting", "Reranking", "Docling", "ChromaDB", "pgvector", "Evaluation sets"] },
+  { name: "Backend & Apps", technologies: ["FastAPI", ".NET / ABP", "Next.js", "React", "Electron", "PostgreSQL"] },
+  { name: "DevOps", technologies: ["Docker", "GitHub Actions", "Blue/green CI/CD"] },
+  { name: "ML & Research", technologies: ["PyTorch", "TensorFlow", "Transformers", "Hugging Face", "OpenCV", "YOLO", "Qiskit", "SCIP"] }
+];
+
+export const EDUCATION = {
+  school: "HUTECH",
+  period: "10/2022 - 07/2026",
+  vi: "Công nghệ thông tin - Học máy ứng dụng",
+  en: "Information Technology - Applied Machine Learning"
+};
+
+export const EXPERIENCE = [
+  {
+    id: "uef-ai-engineer",
+    organization: "University of Economics and Finance (UEF)",
+    vi: {
+      role: "Kỹ sư AI",
+      period: "04/2026 - Hiện tại",
+      department: "Phòng Công nghệ thông tin và Chuyển đổi số",
+      description: "Phát triển và triển khai UEF Learning Assistant, UEF Workplace và UEF Meeting Notes. Xây dựng pipeline RAG, tích hợp công cụ Canvas, thiết kế agent phân quyền có xác nhận thao tác ghi, cùng hệ thống phiên âm và dịch trực tiếp."
+    },
+    en: {
+      role: "AI Engineer",
+      period: "04/2026 - Present",
+      department: "Department of Information Technology and Digital Transformation",
+      description: "Build and deploy UEF Learning Assistant, UEF Workplace, and UEF Meeting Notes. Engineer RAG pipelines, integrate Canvas tools, design permission-scoped agents with confirmation for writes, and develop transcription and live translation workflows."
+    }
+  },
+  {
+    id: "uef-ai-intern",
+    organization: "University of Economics and Finance (UEF)",
+    vi: {
+      role: "Thực tập sinh Kỹ sư AI",
+      period: "12/2025 - 03/2026",
+      department: "Trung tâm Quản lý Công nghệ thông tin",
+      description: "Xây dựng hệ thống RAG và Graph-RAG bằng Semantic Kernel (.NET) cho tra cứu tri thức đại học. Thiết kế cơ sở tri thức, cơ sở dữ liệu vector và tinh chỉnh truy xuất để cải thiện độ chính xác, độ trễ cho chatbot sinh viên và cán bộ."
+    },
+    en: {
+      role: "AI Engineer Intern",
+      period: "12/2025 - 03/2026",
+      department: "IT Management Center",
+      description: "Built RAG and Graph-RAG systems with Semantic Kernel (.NET) for university knowledge retrieval. Structured knowledge bases, designed vector databases, and tuned retrieval to improve chatbot accuracy and latency for students and staff."
+    }
+  }
+];
+
+export const PUBLICATIONS = [
+  {
+    id: "quantum-circuit-cutting",
+    title: "Representation Dependence of Optimal Cut Placement in Quasiprobability Circuit Cutting",
+    authors: "T. H. Phung, H. Bui",
+    venue: "Physical Review A",
+    date: "10/2026",
+    url: "https://doi.org/10.5281/zenodo.23205464",
+    vi: {
+      status: "Đã gửi bài, chưa công bố",
+      description: "Tác giả thứ nhất. Nghiên cứu ảnh hưởng của biểu diễn mạch tương đương đến vị trí cắt tối ưu theo mô hình chi phí QPD. Trong một trường hợp QPE n=14, dùng nghiệm tối ưu của biểu diễn khác làm tăng chi phí lấy mẫu 729 lần; kiểm chứng toàn bộ 1.716 phân hoạch. Pipeline tái lập dùng Qiskit, MQT Bench/QCEC và SCIP.",
+      linkLabel: "Mã nguồn & dữ liệu trên Zenodo"
+    },
+    en: {
+      status: "Submitted, not yet published",
+      description: "First author. Studied how equivalent circuit representations change resource-optimal cut placement under a QPD cost model. In one n=14 QPE case, reusing the other representation's optimum raises sampling overhead 729 times, verified across all 1,716 bipartitions. Released a reproducible Qiskit, MQT Bench/QCEC, and SCIP pipeline.",
+      linkLabel: "Code & data on Zenodo"
+    }
+  },
+  {
+    id: "palmveinformer-tta",
+    title: "PalmVeinFormer-TTA: ROI-free Palm Vein Recognition from Raw NIR Images with Transformer and Test-Time Augmented Gallery Scoring",
+    authors: "T. H. Phung, T. D. Nguyen, C. T. Tran, V. Q. Hoang, T. T. Nguyen, D. H. Bui",
+    venue: "ICT 2026 - Tien Giang University",
+    date: "05/2026",
+    url: null,
+    vi: {
+      status: "Báo cáo trực tiếp tại hội nghị",
+      description: "Tác giả thứ nhất. Nhận dạng tĩnh mạch lòng bàn tay trực tiếp từ ảnh NIR thô, dùng CLAHE, Swin-Tiny, học metric kiểu ArcFace và TTA. Đạt EER 0,25%, Rank-1 99,26%, TAR 98,89% tại FAR 1e-4 trên bộ dữ liệu nội bộ 1.549 danh tính; EER 0,67% khi đánh giá zero-shot trên TongJi. Suy luận một lượt 11 ms/ảnh.",
+      linkLabel: ""
+    },
+    en: {
+      status: "Oral presentation",
+      description: "First author. Recognizes palm veins directly from raw NIR images using CLAHE, Swin-Tiny, ArcFace-style metric learning, and TTA. Achieved EER 0.25%, Rank-1 99.26%, and TAR 98.89% at FAR 1e-4 on an in-house dataset of 1,549 identities; zero-shot EER 0.67% on TongJi. Single-pass inference takes 11 ms/image.",
+      linkLabel: ""
+    }
+  }
+];
+
+export const PROJECTS: Project[] = [
+  {
+    id: "uef-learning-assistant",
+    name: "UEF Learning Assistant",
+    repository: "https://github.com/uef-edu/uef-lms-rag",
+    technologies: ["Python", "FastAPI", "LangGraph", "Docling", "ChromaDB", "PostgreSQL", "React", "LTI 1.3"],
+    vi: {
+      role: "Kỹ sư AI tại UEF",
+      description: "Trợ lý học tập RAG và agent tích hợp Canvas LMS và Zalo OA, trả lời dựa trên tài liệu với nguồn trích dẫn và tra cứu thông tin học tập qua Canvas API.",
+      highlights: [
+        "Độ chính xác câu trả lời tăng từ 78% lên 92%, độ trễ p95 dưới 2 giây; hỗ trợ hơn 1.000 người dùng đồng thời theo CV.",
+        "Pipeline Docling, contextual chunking, query rewriting/expansion, hybrid BM25 + vector search với RRF và nén ngữ cảnh; tìm web dự phòng giới hạn nguồn UEF chính thức.",
+        "Tra cứu điểm, hạn nộp và trạng thái bài tập trên các môn học; điều phối Gemini, OpenAI, FPT vLLM và Ollama. Triển khai blue/green CI/CD kèm sao lưu tự động."
+      ]
+    },
+    en: {
+      role: "AI Engineer at UEF",
+      description: "A RAG and agent learning assistant integrated with Canvas LMS and Zalo OA, providing document-grounded answers with citations and learning information through Canvas APIs.",
+      highlights: [
+        "Improved answer accuracy from 78% to 92% at p95 latency below 2 seconds, supporting 1,000+ concurrent users according to my resume.",
+        "Docling parsing, contextual chunking, query rewriting/expansion, hybrid BM25 + vector search with RRF, and context compression; web-search fallback restricted to official UEF sources.",
+        "Retrieves grades, deadlines, and submission status across enrolled courses; routes across Gemini, OpenAI, FPT vLLM, and Ollama. Blue/green CI/CD with automated backups."
+      ]
+    }
+  },
+  {
+    id: "uef-workplace",
+    name: "UEF Workplace",
+    repository: "https://github.com/uef-edu/uef-office",
+    technologies: ["C#", ".NET 10", "ABP", "Next.js", "PostgreSQL", "pgvector", "OpenAI", "Keycloak"],
+    vi: {
+      role: "Kỹ sư AI duy nhất phụ trách module trợ lý",
+      description: "Trợ lý AI cho cổng điều hành nội bộ: hỏi đáp quy định có trích dẫn bắt buộc, tra cứu tài liệu theo quyền và hỗ trợ quy trình công việc của cán bộ.",
+      highlights: [
+        "43 công cụ phân quyền cho lịch, phòng họp, xe, nghỉ phép, chấm công và duyệt yêu cầu; mọi thao tác ghi cần người dùng xác nhận.",
+        "Agent nền phát hiện trùng lịch, yêu cầu quá hạn và văn bản sắp hết hiệu lực, đưa vào Task Center; áp dụng fail-closed autonomy, outbox/inbox và compensating workflows.",
+        "Che thông tin định danh và chặn dữ liệu nhân sự/lương trước khi gọi cloud LLM. Module có hơn 760 test backend và 1.600 test frontend theo CV."
+      ]
+    },
+    en: {
+      role: "Sole AI engineer for the assistant module",
+      description: "An internal staff-portal assistant that answers regulation questions with mandatory citations, retrieves documents within permission boundaries, and supports staff workflows.",
+      highlights: [
+        "43 permission-scoped tools for calendars, rooms, vehicles, leave, timekeeping, and request approval; every write requires human confirmation.",
+        "Background agents detect schedule conflicts, overdue requests, and expiring documents for a Task Center, backed by fail-closed autonomy, outbox/inbox events, and compensating workflows.",
+        "Masks PII and blocks HR/payroll data before cloud LLM calls. The module has 760+ backend and 1,600+ frontend tests according to my resume."
+      ]
+    }
+  },
+  {
+    id: "uef-meeting-notes",
+    name: "UEF Meeting Notes",
+    repository: "https://github.com/hungpt-uef/meeting-summarizer",
+    technologies: ["Next.js", "React", "TypeScript", "Electron", "SQLite", "FFmpeg", "OpenAI", "Gemini"],
+    vi: {
+      role: "Lập trình viên duy nhất",
+      description: "Ứng dụng web và desktop Windows/macOS cho phiên âm, tạo biên bản họp và dịch song ngữ trực tiếp.",
+      highlights: [
+        "Xử lý cuộc họp đến 3 giờ theo CV: phiên âm có người nói và timestamp, biên bản có thể chỉnh sửa và xuất Word.",
+        "Hỏi đáp RAG trên từng cuộc họp với nguồn trích dẫn; biên bản tổng hợp chủ đề, quyết định và đầu việc.",
+        "Dịch giọng nói trực tiếp với phụ đề nổi trên Zoom, Teams hoặc PowerPoint; hậu chỉnh sửa bằng AI và theo dõi chi phí API theo mô hình."
+      ]
+    },
+    en: {
+      role: "Sole developer",
+      description: "A web and Windows/macOS desktop app for transcription, meeting minutes, and real-time bilingual speech translation.",
+      highlights: [
+        "Processes meetings of up to 3 hours according to my resume: speaker-labelled, timestamped transcripts and editable minutes exported to Word.",
+        "Cited RAG Q&A over individual meetings; minutes capture topics, decisions, and action items.",
+        "Live speech translation with floating subtitles over Zoom, Teams, or PowerPoint, an AI post-editing pass, and per-model API cost tracking."
+      ]
+    }
+  }
 ];
 
 export const CERTIFICATES: Certificate[] = [
@@ -65,7 +215,7 @@ export const CERTIFICATES: Certificate[] = [
     id: 4,
     title: { vi: "JavaScript Essentials 2 - Cisco Networking Academy", en: "JavaScript Essentials 2 - Cisco Networking Academy" },
     issuer: "Cisco Networking Academy & JS Institute",
-    date: "11/2025",
+    date: "12/2025",
     image: getAssetPath("/screenshot-javascript-essentials.png")
   },
   {
